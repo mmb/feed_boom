@@ -17,10 +17,19 @@ API:
 
 ```sh
 # All parameters
-$ curl -d title=test -d link=http://test.com/ -d author=a -d content='test content' http://localhost:3000/feeds/test
+
+$ curl \
+-d title=test \
+-d link=http://test.com/ \
+-d author=a \
+-d content='test content' \
+http://localhost:3000/feeds/test
 
 # Minimum parameters
-$ curl -d link=http://test2.com/  http://localhost:3000/feeds/test
+
+$ curl \
+-d link=http://test2.com/ \
+http://localhost:3000/feeds/test
 
 $ curl http://localhost:3000/feeds/test
 ```
