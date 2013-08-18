@@ -1,7 +1,11 @@
 class FeedsController < ApplicationController
 
   def show
-    @feed = Feed.where(name: params[:feed_name]).first_or_create!
+    @feed = Feed.where(name: params[:feed_name]).first
+
+    unless @feed
+      head :not_found and return
+    end
 
     if stale?(@feed)
       respond_to { |format| format.atom }

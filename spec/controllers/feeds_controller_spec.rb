@@ -6,25 +6,18 @@ describe FeedsController do
 
     context 'when the feed does not exist' do
 
-      it 'creates the feed' do
-        expect {
-          get :show, feed_name: 'feed1', format: :atom
-        }.to change { Feed.count }.by(1)
+      it 'returns not found' do
+        get :show, feed_name: 'feed1', format: :atom
+
+        assert_response 404
       end
 
-      it 'assigns the feed' do
-        get :show, feed_name: 'feed1', format: :atom
-        expect(assigns(:feed)).to eq Feed.last
-      end
-
-      it 'renders the feed' do
-        get :show, feed_name: 'feed1', format: :atom
-        expect(response).to render_template(:show)
-      end
     end
 
     context 'when the feed exists' do
       it 'renders the feed' do
+        FactoryGirl.create(:feed, name: 'feed1')
+
         get :show, feed_name: 'feed1', format: :atom
 
         expect(response).to render_template(:show)
@@ -33,7 +26,7 @@ describe FeedsController do
 
     context 'conditional get' do
       it 'returns 304' do
-        feed = FactoryGirl.create(:feed)
+        feed = FactoryGirl.create(:feed, name: 'feed1')
 
         request.env['HTTP_IF_MODIFIED_SINCE'] = (feed.updated_at + 1).httpdate
 
