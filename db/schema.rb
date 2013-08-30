@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130813044205) do
+ActiveRecord::Schema.define(version: 20130819160444) do
 
   create_table "feed_items", force: true do |t|
     t.text     "title"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 20130813044205) do
     t.text     "name",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "write_auth"
   end
 
   add_index "feeds", ["name"], name: "index_feeds_on_name", unique: true

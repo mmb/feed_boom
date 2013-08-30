@@ -44,21 +44,29 @@ describe FeedsController do
 
     context 'when the feed does not exist' do
 
-      before(:each) do
-        post :add_item, feed_name: 'feed1', title: 'test', link: 'http://test.com/', author: 'a', content: 'c'
-      end
-
       it 'creates the feed' do
+        post :add_item, feed_name: 'feed1', title: 'test', link: 'http://test.com/', author: 'a', content: 'c'
+
         expect(Feed.last.name).to eq 'feed1'
       end
 
       it 'adds an item to the feed' do
+        post :add_item, feed_name: 'feed1', title: 'test', link: 'http://test.com/', author: 'a', content: 'c'
+
         feed_item = Feed.last.feed_items.first
 
         expect(feed_item.title).to eq 'test'
         expect(feed_item.link).to eq 'http://test.com/'
         expect(feed_item.author).to eq 'a'
         expect(feed_item.content).to eq 'c'
+      end
+
+      it 'sets the write authorization if provided' do
+        request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(
+            nil, 'secret')
+        post :add_item, feed_name: 'feed1', title: 'test', link: 'http://test.com/', author: 'a', content: 'c'
+
+        expect(Feed.last.write_auth).to_not be_nil
       end
 
     end
@@ -75,6 +83,37 @@ describe FeedsController do
         expect(last.link).to eq 'http://test.com/'
         expect(last.author).to eq 'a'
         expect(last.content).to eq 'c'
+      end
+
+      context 'when the feed has a password' do
+        let(:feed) { FactoryGirl.create(:feed, write_auth: 'secret') }
+        let(:try_password) { 'secret' }
+
+        before do
+          request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(
+              nil, try_password)
+        end
+
+        context 'when the password is correct' do
+
+          it 'adds an item to the feed' do
+            expect {
+              post :add_item, feed_name: feed.name, link: 'http://test.com/'
+            }.to change { Feed.count }.by(1)
+          end
+
+        end
+
+        context 'when the password is incorrect' do
+          let(:try_password) { 'wrong' }
+
+          it 'returns unauthorized' do
+            post :add_item, feed_name: feed.name, link: 'http://test.com/'
+
+            assert_response 401
+          end
+
+        end
       end
 
     end
