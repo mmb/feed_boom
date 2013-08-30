@@ -16,36 +16,43 @@ Uses:
 API:
 
 ```sh
-# All parameters
+# Posting with all parameters
 
 $ curl \
 -d title=test \
 -d link=http://test.com/ \
 -d author=a \
 -d content='test content' \
-http://localhost:3000/feeds/test
+http://localhost:3000/feeds/atest
 
-# Minimum parameters
+# Posting with minimum parameters
 
 $ curl \
 -d link=http://test2.com/ \
-http://localhost:3000/feeds/test
+http://localhost:3000/feeds/atest
 
-$ curl http://localhost:3000/feeds/test
+# Setting a write password on a new feed (username doesn't matter).
+
+$ curl \
+-u :secret \
+-d link=http://test3.com/ \
+http://localhost:3000/feeds/btest
+
+$ curl http://localhost:3000/feeds/atest.atom
 ```
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xml:lang="en-US" xmlns="http://www.w3.org/2005/Atom">
-  <id>tag:localhost,2005:/feeds/test</id>
+  <id>tag:localhost,2005:/feeds/atest</id>
   <link rel="alternate" type="text/html" href="http://localhost:3000"/>
-  <link rel="self" type="application/atom+xml" href="http://localhost:3000/feeds/test"/>
-  <title>test</title>
-  <updated>2013-08-14T06:54:15Z</updated>
+  <link rel="self" type="application/atom+xml" href="http://localhost:3000/feeds/atest.atom"/>
+  <title>atest</title>
+  <updated>2013-08-30T07:21:35Z</updated>
   <entry>
-    <id>tag:localhost,2005:FeedItem/2</id>
-    <published>2013-08-14T06:54:15Z</published>
-    <updated>2013-08-14T06:54:15Z</updated>
+    <id>tag:localhost,2005:FeedItem/22</id>
+    <published>2013-08-30T07:21:35Z</published>
+    <updated>2013-08-30T07:21:35Z</updated>
     <link rel="alternate" type="text/html" href="http://test2.com/"/>
     <title/>
     <author>
@@ -54,9 +61,9 @@ $ curl http://localhost:3000/feeds/test
     <content/>
   </entry>
   <entry>
-    <id>tag:localhost,2005:FeedItem/1</id>
-    <published>2013-08-14T06:54:03Z</published>
-    <updated>2013-08-14T06:54:03Z</updated>
+    <id>tag:localhost,2005:FeedItem/21</id>
+    <published>2013-08-30T07:21:18Z</published>
+    <updated>2013-08-30T07:21:18Z</updated>
     <link rel="alternate" type="text/html" href="http://test.com/"/>
     <title>test</title>
     <author>
